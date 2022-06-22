@@ -5,6 +5,16 @@
     <title>Questions</title>
 </head>
 <body>
-    <h1>test</h1>
+    <h1>Vragen</h1>
+    <div th:each= "question: ${questions}">
+        <h2 th:text="${question.getQuestion()}"></h2>
+        <p th:text="${question.getCategory()} + ' - ' + ${question.getDifficulty()}"></p>
+        <h3>Antwoorden</h3>
+        <ul>
+            <li th:each="answer : ${question.getAnswers()}">
+                <input type="checkbox" th:value="${answer}" th:text="${answer}"/>
+            </li>
+        </ul>
+    </div>
 </body>
 </html>

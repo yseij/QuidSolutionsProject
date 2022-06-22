@@ -8,19 +8,22 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 @Controller
 public class MainController {
 
     @RequestMapping("/questions")
-    public String index() throws IOException, JSONException{
+    public String index(Model model) throws IOException, JSONException{
         ArrayList<Question> questions = new ArrayList<>();
 
         URL url = new URL("https://opentdb.com/api.php?amount=5");
@@ -34,14 +37,29 @@ public class MainController {
                 JSONObject jsonObject = new JSONObject(temp);
                 JSONArray results = (JSONArray) jsonObject.get("results");
                 for (int i = 0; i < 5; i++){
-                    System.out.println(results.get(i));
                     Gson gson= new Gson();
                     Question obj = gson.fromJson(results.getString(i),Question.class);
                     questions.add(obj);
                 }
-                System.out.println(questions.get(2));
             }
         }
+        ArrayList<Question> questionsForIndex = new ArrayList<>();
+        for (int counter = 0; counter < questions.size(); counter++){
+            Question question = new Question();
+            question.setQuestion(questions.get(counter).getQuestion());
+            question.setCategory(questions.get(counter).getCategory());
+            question.setDifficulty(questions.get(counter).getDifficulty());
+            question.setCorrect_answer(questions.get(counter).getCorrect_answer());
+            question.setIncorrect_answers(questions.get(counter).getIncorrect_answers());
+            question.setAnswers();
+            questionsForIndex.add(question);
+        }
+        model.addAttribute("questions", questionsForIndex);
         return "index";
     }
+
+//    @PostMapping("/checkanswer")
+//    public String checkAnswer(){
+//
+//    }
 }

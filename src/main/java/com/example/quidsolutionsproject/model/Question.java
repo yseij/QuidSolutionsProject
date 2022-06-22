@@ -2,9 +2,17 @@ package com.example.quidsolutionsproject.model;
 
 import org.json.JSONArray;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class Question {
     private String category, type, difficulty, question, correct_answer;
     private String[] incorrect_answers;
+    private List<String> answers;
+
+    public Question(){
+    }
 
     public Question(String difficulty, String question, String correct_answer,
                     String[] incorrect_answers, String category, String type){
@@ -62,5 +70,22 @@ public class Question {
 
     public void setIncorrect_answers(String[] incorrect_answers){
         this.incorrect_answers = incorrect_answers;
+    }
+
+    public List<String> getAnswers(){
+        return answers;
+    }
+
+    public void setAnswers(){
+        List<String> answers = new ArrayList<>();
+        String[] incorrect_answers = getIncorrect_answers();
+        if (incorrect_answers != null){
+            for (int counter = 0; counter < incorrect_answers.length; counter++){
+                answers.add(incorrect_answers[counter]);
+            }
+            answers.add(getCorrect_answer());
+            System.out.println("in klasse" + answers);
+        }
+        this.answers = answers;
     }
 }
