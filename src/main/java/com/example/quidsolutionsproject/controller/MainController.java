@@ -20,12 +20,13 @@ import java.util.Scanner;
 
 @Controller
 public class MainController {
-
-    ArrayList<Question> questionsForIndex = new ArrayList<>();
+    private ArrayList<Question> questionsForIndex = new ArrayList<>();
     private ArrayList<Question> questionsForControl = new ArrayList<>();
 
     @GetMapping("/questions")
     public String index(Model model) throws IOException, JSONException{
+        questionsForIndex.clear();
+        questionsForControl.clear();
         ArrayList<Question> questions = new ArrayList<>();
 
         URL url = new URL("https://opentdb.com/api.php?amount=5");
