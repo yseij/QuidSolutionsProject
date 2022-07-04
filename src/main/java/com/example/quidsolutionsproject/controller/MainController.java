@@ -1,5 +1,6 @@
 package com.example.quidsolutionsproject.controller;
 
+import com.example.quidsolutionsproject.model.Answer;
 import com.example.quidsolutionsproject.model.Question;
 import com.google.gson.Gson;
 import org.json.JSONArray;
@@ -63,17 +64,23 @@ public class MainController {
     }
 
     @PostMapping(value = "/checkanswer")
-    @ResponseBody
-    public String checkAnswer(HttpServletRequest request){
+    public String checkAnswer(HttpServletRequest request, Model model){
+        ArrayList<Answer> answers = new ArrayList<>();
         System.out.println("---------------------------");
         for (int i=0; i<questionsForIndex.size(); i++)
         {
             String getRequest = "question" + i;
             String answer = questionsForIndex.get(i).getAnswers().get(Integer.parseInt(request.getParameter(getRequest)));
+            Answer answer1 = new Answer(answer,
+                                        questionsForControl.get(i).getCorrect_answer(),
+                                        questionsForControl.get(i).getQuestion(),
+                                        false);
             if (Objects.equals(questionsForControl.get(i).getCorrect_answer(), answer)){
-                System.out.println("test");
+                answer1.setAnswer_correct(true);
             }
+            answers.add(answer1);
         }
-        return "index";
+        model.addAttribute("answers", answers);
+        return "rightAnswers";
     }
 }
