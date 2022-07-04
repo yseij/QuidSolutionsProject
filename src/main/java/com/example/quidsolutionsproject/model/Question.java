@@ -4,10 +4,11 @@ import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Question {
-    private String category, type, difficulty, question, correct_answer;
+    private String name, category, type, difficulty, question, correct_answer;
     private String[] incorrect_answers;
     private List<String> answers;
 
@@ -22,6 +23,14 @@ public class Question {
         this.question = question;
         this.correct_answer = correct_answer;
         this.incorrect_answers = incorrect_answers;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public void setName(String name){
+        this.name = name;
     }
 
     public String getCategory(){
@@ -84,8 +93,8 @@ public class Question {
                 answers.add(incorrect_answers[counter]);
             }
             answers.add(getCorrect_answer());
-            System.out.println("in klasse" + answers);
         }
+        answers.sort(Comparator.naturalOrder());
         this.answers = answers;
     }
 }
