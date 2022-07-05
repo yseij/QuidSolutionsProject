@@ -22,44 +22,17 @@ import java.util.Scanner;
 public class MainController {
     private ArrayList<Question> questionsForIndex = new ArrayList<>();
     private ArrayList<Question> questionsForControl = new ArrayList<>();
+    private ArrayList<Question> questions = new ArrayList<>();
 
     @GetMapping("/questions")
-    public String index(Model model) throws IOException, JSONException{
+    public String index(Model model) throws JSONException, IOException{
         questionsForIndex.clear();
         questionsForControl.clear();
-        ArrayList<Question> questions = new ArrayList<>();
+        questions.clear();
 
-        URL url = new URL("https://opentdb.com/api.php?amount=5");
-        HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-        conn.setRequestMethod("GET");
-        conn.connect();
-        if(conn.getResponseCode() == 200) {
-            Scanner scan = new Scanner(url.openStream());
-            while(scan.hasNext()) {
-                String temp = scan.nextLine();
-                JSONObject jsonObject = new JSONObject(temp);
-                JSONArray results = (JSONArray) jsonObject.get("results");
-                for (int i = 0; i < 5; i++){
-                    Gson gson= new Gson();
-                    Question obj = gson.fromJson(results.getString(i),Question.class);
-                    questions.add(obj);
-                }
-            }
-        }
-        for (int counter = 0; counter < questions.size(); counter++){
-            Question question = new Question();
-            question.setName("question" + counter);
-            question.setQuestion(questions.get(counter).getQuestion());
-            question.setCategory(questions.get(counter).getCategory());
-            question.setDifficulty(questions.get(counter).getDifficulty());
-            question.setCorrect_answer(questions.get(counter).getCorrect_answer());
-            question.setIncorrect_answers(questions.get(counter).getIncorrect_answers());
-            questionsForControl.add(question);
-            question.setAnswers();
-            questionsForIndex.add(question);
-            System.out.println(question.getAnswers());
-            System.out.println(question.getCorrect_answer());
-        }
+        getDataOfUrl();
+        setQuestions();
+
         model.addAttribute("questions", questionsForIndex);
         return "index";
     }
@@ -83,5 +56,40 @@ public class MainController {
         }
         model.addAttribute("answers", answers);
         return "rightAnswers";
+    }
+
+    private void getDataOfUrl() throws IOException, JSONException{
+        URL url = new URL("https://opentdb.com/api.php?amount=5");
+        HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.connect();
+        if(conn.getResponseCode() == 200) {
+            Scanner scan = new Scanner(url.openStream());
+            while(scan.hasNext()) {
+                String temp = scan.nextLine();
+                JSONObject jsonObject = new JSONObject(temp);
+                JSONArray results = (JSONArray) jsonObject.get("results");
+                for (int i = 0; i < 5; i++){
+                    Gson gson= new Gson();
+                    Question obj = gson.fromJson(results.getString(i),Question.class);
+                    questions.add(obj);
+                }
+            }
+        }
+    }
+
+    private void setQuestions(){
+        for (int counter = 0; counter < questions.size(); counter++){
+            Question question = new Question();
+            question.setName("question" + counter);
+            question.setQuestion(questions.get(counter).getQuestion());
+            question.setCategory(questions.get(counter).getCategory());
+            question.setDifficulty(questions.get(counter).getDifficulty());
+            question.setCorrect_answer(questions.get(counter).getCorrect_answer());
+            question.setIncorrect_answers(questions.get(counter).getIncorrect_answers());
+            questionsForControl.add(question);
+            question.setAnswers();
+            questionsForIndex.add(question);
+        }
     }
 }
